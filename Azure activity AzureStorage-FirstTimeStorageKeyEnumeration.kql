@@ -1,0 +1,21 @@
+//Detect when a user retrieves keys for Azure storage for the first time compared to the previous time range
+let knownusers=
+    AzureActivity
+    | where TimeGenerated > ago(90d) and TimeGenerated < ago(1d)
+    | where OperationName == "List Storage Account Keys"
+    | where ActivityStatus == "Succeeded"
+    | project-rename Actor=Caller
+    | distinct Actor;
+AzureActivity
+| where TimeGenerated > ago(1d)
+| where OperationName == "List Storage Account Keys"
+| where ActivityStatus == "Succeeded"
+| project-rename Actor=Caller
+| where Actor !in (knownusers)
+| project
+    TimeGenerated,
+    Actor,
+    ['Actor IP Address']=CallerIpAddress,
+    ['Storage Account Name']=Resource,
+    ['Azure Subscription Id']=SubscriptionId,
+    ['Azure Resource Group']=ResourceGroup 
