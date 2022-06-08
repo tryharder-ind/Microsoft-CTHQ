@@ -2,7 +2,7 @@
 //Uses a lookup to a GitHub gist to match Azure role ids to friendly role names and the IdentityInfo to retrieve identity details
 let workspaceid="your Sentinel workspace id";
 let timeframe=1d;
-let AZRoles = externaldata(Name: string, Id: string) [@"https://gist.githubusercontent.com/reprise99/363eee70938c9a3d662e3f6da4610fe4/raw/b25b2d7a626396684ab578363888a0e360e7b287/.csv"] with(ignoreFirstRecord=true, format="csv");
+let AZRoles = externaldata(Name: string, Id: string) [@"https://github.com/tryharder-ind/Microsoft-CTHQ .csv"] with(ignoreFirstRecord=true, format="csv");
 let accesschange =AzureActivity
     | where TimeGenerated > ago(timeframe)
     | where OperationName == "Create role assignment"
